@@ -84,7 +84,12 @@ def apply_ltspice_filter(simname,sig_in_x,sig_in_y,**kwargs):
   if sth_changed:
     #print("executing ./wine_ltspice.sh, saving STDOUT to wine_ltspice.log")
     #os.system("{:s} {:s}.asc > wine_ltspice.log 2>&1".format(simname))
-    os.system(ltspice_command+" {:s}.asc".format(simname))
+    if sys.platform == "linux":
+      os.system(ltspice_command+" {:s}.asc".format(simname))
+    else:
+      import subprocess
+      subprocess.run([*ltspice_command.split(), "{:s}.asc".format(simname)])
+    
   else:
     print("input data did not change, reading existing .raw file")
     
