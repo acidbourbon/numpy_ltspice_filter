@@ -3,12 +3,96 @@
 import numpy as np
 #from LTSpice_RawRead import RawRead  ## i attached this module underneath for convenience
 import os
-from scipy import interpolate
+from scipy import interpolate, signal
 
 import filecmp
 from shutil import copyfile
 import sys
 
+
+
+
+def gauss(x, **kwargs):
+  mu = kwargs.get("mu",0)
+  sigma = kwargs.get("sigma",1)
+  A = kwargs.get("A",1./(sigma*(2.*np.pi)**0.5)) ## default amplitude generates bell curve with area = 1
+  return A*np.exp(-(x-mu)**2/(2.*sigma**2))
+
+
+def resize_vector( vector, target_size):
+    if ( len(vector) < target_size ):
+      return np.pad( vector,(0,target_size-len(vector)), 'constant', constant_values=(0) ) ## pad with zeros to desired length
+    elif ( len(vector) > target_size ):
+      return vector[0:target_size] ## cut away if too long
+    else:
+      return vector
+
+
+def resample(target_x,data_x,data_y):
+  f = interpolate.interp1d(data_x,data_y,bounds_error=False, fill_value=0.)
+  out_x = target_x
+  out_y = f(target_x)
+  return (out_x,out_y)
+
+
+def convolution_filter(data, kernel, **kwargs):
+  
+  delta_t = float(kwargs.get("delta_t",1))
+  kernel_delay = float(kwargs.get("kernel_delay",0))
+  
+  # apply filter kernel to input data via fft convolution
+  filtered = signal.fftconvolve( data , kernel * delta_t , mode = 'full' )
+
+  # shift filtered signal backwards in time to counteract kernel_delay
+  filtered = filtered[ int(kernel_delay/delta_t): ]
+
+  # bring filtered signal to same length as input data, cut away at the end
+  filtered = resize_vector(filtered,len(data))
+  
+  return filtered
+
+
+
+def get_impulse_response(simname, **kwargs):
+  params  = kwargs.get("params",{})
+  
+  
+  spice_sample_width= float(kwargs.get("sample_width",1))
+
+  delta_t = float( kwargs.get("delta_t",1))
+  
+  spice_delta_t = float( kwargs.get("spice_delta_t", delta_t/4. ))
+  
+  spice_samples = int(spice_sample_width/spice_delta_t)
+  spice_time = np.linspace(0,spice_sample_width,spice_samples)
+  
+  kernel_delay = float(kwargs.get("kernel_delay", spice_sample_width*0.1)) # delta pulse at 10% of sample width
+  
+  delta_pulse = gauss( spice_time,
+                     mu = kernel_delay,
+                     sigma=2*spice_delta_t
+                   )
+
+
+  dummy, spice_IR = apply_ltspice_filter(
+        simname,
+        spice_time,
+        delta_pulse,
+        params = params
+        )
+  
+  
+  kernel_sample_width = spice_sample_width
+
+  kernel_delta_t = delta_t
+  kernel_samples = int(kernel_sample_width/kernel_delta_t)
+  kernel_time = np.linspace(0,kernel_sample_width,kernel_samples)
+
+  return resample(kernel_time, spice_time, spice_IR)
+  # returns (kernel_time, kernel)
+  
+
+  
 
 def apply_ltspice_filter(simname,sig_in_x,sig_in_y,**kwargs):
   
