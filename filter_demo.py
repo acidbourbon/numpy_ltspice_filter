@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-
 import numpy as np
 from apply_ltspice_filter import apply_ltspice_filter
 import matplotlib.pyplot as plt
 
-
-# generate test signal
+##################################################
+##             generate test signal             ##
+##################################################
 
 # our samples shall be 100 ms wide
 sample_width=100e-3
@@ -19,7 +19,9 @@ time = np.linspace(0,sample_width,samples)
 # we want 1 V between 10 ms and 30 ms, and 2.5 V between 40 and 70 ms
 signal_a = 0 + 1*((time > 10e-3) * (time < 30e-3)) + 2.5*((time > 40e-3) * (time < 70e-3))
 
-
+##################################################
+##        apply filter - configuration 1        ##
+##################################################
 
 # all values in SI units
 configuration_1 = {
@@ -33,6 +35,10 @@ dummy, signal_b1 = apply_ltspice_filter(
       params=configuration_1
       )
 
+##################################################
+##        apply filter - configuration 2        ##
+##################################################
+
 configuration_2 = {
   "C":50e-6, # 50 uF
   "L":300e-3 # 300 mH
@@ -44,6 +50,9 @@ dummy, signal_b2 = apply_ltspice_filter(
       params=configuration_2
       )
 
+##################################################
+##           plot input vs output(s)            ##
+##################################################
   
 plt.plot(time,signal_a, label="signal_a (LTSpice input)")
 plt.plot(time,signal_b1, label="signal_b1 (LTSpice output, C=100uF, L=200mH)")

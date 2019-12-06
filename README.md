@@ -3,10 +3,10 @@
 A python module for seamless integration of analog filters designed in LTspice into Python3/Numpy
 signal processing projects.
 
+For a demonstration of its uses:
+
 run ./filter_demo.py
 and ./fast_convolution_filter_demo.py
-
-For a demonstration of its uses.
 
 
 find an extensive article about this software example at:
