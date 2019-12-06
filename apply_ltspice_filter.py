@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 
 import numpy as np
-from LTSpice_RawRead import RawRead
 import os
 from scipy import interpolate, signal
-
 import filecmp
 from shutil import copyfile
 import sys
+
+# use Nuno Brum's RawRead module. Can be found here:
+# https://github.com/nunobrum/PyLTSpice/raw/master/LTSpice_RawRead.py
+from LTSpice_RawRead import RawRead
 
 
 
