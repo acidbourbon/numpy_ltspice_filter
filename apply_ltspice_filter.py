@@ -9,8 +9,10 @@ import sys
 
 # use Nuno Brum's RawRead module. Can be found here:
 # https://github.com/nunobrum/PyLTSpice/raw/master/LTSpice_RawRead.py
-from LTSpice_RawRead import RawRead
+#from LTSpice_RawRead import RawRead
 
+# use Nuno's PyPi module
+from PyLTSpice.LTSpice_RawRead import RawRead
 
 
 

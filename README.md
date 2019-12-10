@@ -17,11 +17,8 @@ https://acidbourbon.wordpress.com/2019/12/04/ltspice-numpy-part-2-fast-convoluti
 
 
 The utilities in this repository heavily rely on
-
-* __LTSpiceRaw_Reader.py__
-A pure python class that serves to read raw files into a python class.
-
-as part of https://github.com/nunobrum/PyLTSpice
-developed by Nuno Brum
+the PyLTSpice module developed by Nuno Brum.
+It is now a pip package. Install via:
+sudo pip3 install PyLTSpice
 
 A warm thank you to Nuno.
