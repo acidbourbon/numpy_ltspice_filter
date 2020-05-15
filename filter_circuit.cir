@@ -1,0 +1,12 @@
+* 
+V1 vin 0 PWL file=sig_in.csv
+R1 vout vin 50R
+C1 vout 0 {C}
+L1 vout N001 {L}
+R2 0 N001 50R
+.tran 0 {transtop} 0 {timestep} startup
+.include param.txt
+.include trancmd.txt
+* do not edit this by hand
+.backanno
+.end
