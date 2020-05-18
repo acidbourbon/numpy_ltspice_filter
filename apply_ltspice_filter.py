@@ -106,14 +106,21 @@ def apply_ltspice_filter(simname,sig_in_x,sig_in_y,**kwargs):
   default_ltspice_command = "C:\Program Files\LTC\LTspiceXVII\XVIIx64.exe -Run -b " 
   if sys.platform == "linux":
     default_ltspice_command = 'wine C:\\\\Program\\ Files\\\\LTC\\\\LTspiceXVII\\\\XVIIx64.exe -Run -b '
-  
+  elif sys.platform == "darwin":
+    default_ltspice_command = '/Applications/LTspice.app/Contents/MacOS/LTspice -b '
   ltspice_command = kwargs.get("ltspice_command",default_ltspice_command)
   
   
 
   params  = kwargs.get("params",{})
 
-  simname = simname.replace(".asc","")
+  
+  if sys.platform == "darwin":
+    simname = simname.replace(".cir","")
+  else:
+    simname = simname.replace(".asc","")
+  
+
 
   with open("sig_in.csv_","w") as f:
     for i in range(0,len(sig_in_x)):
@@ -174,6 +181,8 @@ def apply_ltspice_filter(simname,sig_in_x,sig_in_y,**kwargs):
     #os.system("{:s} {:s}.asc > wine_ltspice.log 2>&1".format(simname))
     if sys.platform == "linux":
       os.system(ltspice_command+" {:s}.asc".format(simname))
+    elif sys.platform == "darwin":
+      os.system(ltspice_command+" {:s}.cir".format(simname))
     else:
       import subprocess
       subprocess.run([*ltspice_command.split(), "{:s}.asc".format(simname)])

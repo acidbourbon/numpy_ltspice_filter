@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import numpy as np
 from apply_ltspice_filter import apply_ltspice_filter
 import matplotlib.pyplot as plt
@@ -19,6 +20,16 @@ time = np.linspace(0,sample_width,samples)
 # we want 1 V between 10 ms and 30 ms, and 2.5 V between 40 and 70 ms
 signal_a = 0 + 1*((time > 10e-3) * (time < 30e-3)) + 2.5*((time > 40e-3) * (time < 70e-3))
 
+
+
+if sys.platform == "darwin":
+  """ In order for the command /Applications/LTspice.app/Contents/MacOS/LTspice -b Draft1.cir to work, a netlist file is required."""
+  file_extension = "cir"
+else:
+  file_extension = "asc"
+
+
+
 ##################################################
 ##        apply filter - configuration 1        ##
 ##################################################
@@ -30,7 +41,7 @@ configuration_1 = {
 }
 
 dummy, signal_b1 = apply_ltspice_filter(
-      "filter_circuit.asc",
+      f"filter_circuit.{file_extension}",
       time, signal_a,
       params=configuration_1
       )
@@ -45,7 +56,7 @@ configuration_2 = {
 }
 
 dummy, signal_b2 = apply_ltspice_filter(
-      "filter_circuit.asc",
+      f"filter_circuit.{file_extension}",
       time, signal_a,
       params=configuration_2
       )
@@ -60,6 +71,7 @@ plt.plot(time,signal_b2, label="signal_b2 (LTSpice output, C=50uF,  L=300mH)")
 plt.xlabel("time (s)")
 plt.ylabel("voltage (V)")
 plt.ylim((-1,3.5))
+plt.grid(True)
 
 plt.legend()
 plt.show()
