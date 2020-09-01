@@ -214,7 +214,7 @@ def apply_ltspice_filter(simname,sig_in_x,sig_in_y,**kwargs):
  
   #  interpolate ltspice output, so you have the same x value spacing as in the input voltage vector
   if interpol:
-    f = interpolate.interp1d(vout_x,vout_y)
+    f = interpolate.interp1d(vout_x,vout_y, fill_value="extrapolate")
     vout_x = sig_in_x
     vout_y = f(sig_in_x)
   
