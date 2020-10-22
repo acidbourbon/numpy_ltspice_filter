@@ -99,6 +99,13 @@ def get_impulse_response(simname, **kwargs):
   
 
 def apply_ltspice_filter(simname,sig_in_x,sig_in_y,**kwargs):
+    
+  target_dir = os.path.dirname(simname)
+
+  simname = os.path.basename(simname)
+
+  here = os.getcwd()
+  os.chdir(target_dir)
   
   verbose = kwargs.get("verbose",False)
   interpol = kwargs.get("interpolate",True)
@@ -218,6 +225,7 @@ def apply_ltspice_filter(simname,sig_in_x,sig_in_y,**kwargs):
     vout_x = sig_in_x
     vout_y = f(sig_in_x)
   
+  os.chdir(here)
   return (vout_x,vout_y)
 
 
