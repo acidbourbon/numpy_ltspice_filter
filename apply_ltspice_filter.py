@@ -58,7 +58,7 @@ def convolution_filter(data, kernel, **kwargs):
 
 
 def get_impulse_response(simname, **kwargs):
-  params  = kwargs.get("params",{})
+
   
   
   spice_sample_width= float(kwargs.get("sample_width",1))
@@ -82,7 +82,8 @@ def get_impulse_response(simname, **kwargs):
         simname,
         spice_time,
         delta_pulse,
-        params = params
+        **kwargs
+
         )
   
   
