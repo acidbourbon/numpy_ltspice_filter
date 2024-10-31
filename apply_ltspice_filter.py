@@ -12,7 +12,7 @@ import sys
 #from LTSpice_RawRead import RawRead
 
 # use Nuno's PyPi module
-from PyLTSpice.LTSpice_RawRead import RawRead
+from PyLTSpice import RawRead
 
 
 
